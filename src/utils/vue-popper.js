@@ -3,6 +3,7 @@ import deepmerge from 'deepmerge';
 import { PopupManager } from 'element-ui/src/utils/popup';
 import PopperUtils from 'popper.js/dist/esm/popper-utils';
 import PopperJS from 'popper.js';
+import Vue from 'vue';
 
 const stop = e => e.stopPropagation();
 
@@ -84,9 +85,9 @@ export const BasePopper = {
       type: String,
       default: 'bottom'
     },
-    reference: HTMLElement,
-    popper: HTMLElement,
-    boundariesElement: [String, HTMLElement],
+    reference: Vue.prototype.$isServer ? {} : HTMLElement,
+    popper: Vue.prototype.$isServer ? {} : HTMLElement,
+    boundariesElement: Vue.prototype.$isServer ? {} : [String, HTMLElement],
     value: Boolean,
     visibleArrow: {
       type: Boolean,
