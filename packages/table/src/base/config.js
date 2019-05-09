@@ -67,14 +67,17 @@ export const cellForced = {
     renderHeader: function(h, { column }) {
       return column.label || '';
     },
-    renderCell: function(h, { row, store }, proxy) {
+    renderCell: function(h, { row, store }) {
       const classes = ['el-table__expand-icon'];
       if (store.states.expandRows.indexOf(row) > -1) {
         classes.push('el-table__expand-icon--expanded');
       }
-      // 尽量在这里避免访问 this
+      const callback = function(e) {
+        e.stopPropagation();
+        store.toggleRowExpansion(row);
+      };
       return (<div class={ classes }
-        on-click={ e => this.handleExpandClick(row, e) }>
+        on-click={callback}>
         <i class='el-icon el-icon-arrow-right'></i>
       </div>);
     },
@@ -91,8 +94,4 @@ export function defaultRenderCell(h, { row, column, $index }) {
     return column.formatter(row, column, value, $index);
   }
   return value;
-}
-
-export function overflowTooltipRender() {
-
 }

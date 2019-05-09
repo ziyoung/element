@@ -1,4 +1,4 @@
-import { cellStarts, cellForced, defaultRenderCell } from './cell';
+import { cellStarts, cellForced, defaultRenderCell } from './config';
 import { mergeOptions, parseWidth, parseMinWidth, compose } from '../util';
 import ElCheckbox from 'element-ui/packages/checkbox';
 

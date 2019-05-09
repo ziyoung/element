@@ -30,6 +30,7 @@ export default {
   render(h) {
     const columnsHidden = this.columns.map((column, index) => this.isColumnHidden(index));
     let rows = this.data;
+    // TODO: 这里移除
     if (this.store.states.lazy && Object.keys(this.store.states.lazyTreeNodeMap).length) {
       rows = rows.reduce((prev, item) => {
         prev.push(item);
@@ -99,6 +100,7 @@ export default {
                         row,
                         $index
                       };
+                      // 这里做出调整
                       if (cellIndex === this.firstDefaultColumnIndex && treeNode) {
                         data.treeNode = {
                           hasChildren: treeNode.hasChildren || (treeNode.children && treeNode.children.length),
@@ -131,6 +133,7 @@ export default {
                   })
                 }
               </tr>);
+              // 这里做出调整
               if (this.hasExpandColumn && this.store.isRowExpanded(row)) {
                 return [
                   tr,
@@ -433,11 +436,6 @@ export default {
         }
       }
       table.$emit(`row-${name}`, row, column, event);
-    },
-
-    handleExpandClick(row, e) {
-      e.stopPropagation();
-      this.store.toggleRowExpansion(row);
     }
   }
 };
