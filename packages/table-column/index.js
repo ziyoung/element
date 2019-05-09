@@ -1,4 +1,5 @@
-import ElTableColumn from '../table/src/table-column';
+// import ElTableColumn from '../table/src/table-column';
+import ElTableColumn from '../table/src/base/column';
 
 /* istanbul ignore next */
 ElTableColumn.install = function(Vue) {

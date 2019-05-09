@@ -34,8 +34,8 @@
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
       :style="[bodyHeight]">
+      <!-- :context="context" -->
       <table-body
-        :context="context"
         :store="store"
         :stripe="stripe"
         :row-class-name="rowClassName"
@@ -283,7 +283,7 @@
 
       rowKey: [String, Function],
 
-      context: {},
+      // context: {},
 
       showHeader: {
         type: Boolean,
