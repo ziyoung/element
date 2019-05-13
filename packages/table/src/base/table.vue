@@ -34,7 +34,6 @@
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
       :style="[bodyHeight]">
-      <!-- :context="context" -->
       <table-body
         :store="store"
         :stripe="stripe"
