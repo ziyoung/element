@@ -11,6 +11,7 @@ export const cellStarts = {
     order: '',
     className: 'el-table-column--selection'
   },
+  // TODO: 考虑移除
   expand: {
     width: 48,
     minWidth: 48,
@@ -63,6 +64,7 @@ export const cellForced = {
     },
     sortable: false
   },
+  // TODO: 考虑移除
   expand: {
     renderHeader: function(h, { column }) {
       return column.label || '';

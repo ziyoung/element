@@ -20,11 +20,11 @@ export default {
       required: true
     },
     stripe: Boolean,
-    context: {},
     rowClassName: [String, Function],
     rowStyle: [Object, Function],
     fixed: String,
-    highlight: Boolean
+    highlight: Boolean,
+    decorateRowContent: Function
   },
 
   render(h) {
@@ -134,18 +134,20 @@ export default {
                 }
               </tr>);
               // 这里做出调整
-              if (this.hasExpandColumn && this.store.isRowExpanded(row)) {
-                return [
-                  tr,
-                  <tr>
-                    <td colspan={ this.columns.length } class="el-table__expanded-cell">
-                      { this.table.renderExpanded ? this.table.renderExpanded(h, { row, $index, store: this.store }) : ''}
-                    </td>
-                  </tr>
-                ];
-              } else {
-                return tr;
-              }
+              // if (this.hasExpandColumn && this.store.isRowExpanded(row)) {
+              //   return [
+              //     tr,
+              //     <tr>
+              //       <td colspan={ this.columns.length } class="el-table__expanded-cell">
+              //         { this.table.renderExpanded ? this.table.renderExpanded(h, { row, $index, store: this.store }) : ''}
+              //       </td>
+              //     </tr>
+              //   ];
+              // } else {
+              //   return tr;
+              // }
+              // return this.wrapRowContent ? this.wrapRowContent(tr) : tr;
+              return this.decorateRowContent ? this.decorateRowContent(tr, { row, $index, store: this.store }) : tr;
             }).concat(
               <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
             )
@@ -192,9 +194,9 @@ export default {
       return this.store.states.columns;
     },
 
-    hasExpandColumn() {
-      return this.columns.some(({ type }) => type === 'expand');
-    },
+    // hasExpandColumn() {
+    //   return this.columns.some(({ type }) => type === 'expand');
+    // },
 
     firstDefaultColumnIndex() {
       for (let index = 0; index < this.columns.length; index++) {

@@ -40,6 +40,7 @@
         :row-class-name="rowClassName"
         :row-style="rowStyle"
         :highlight="highlightCurrentRow"
+        :decorate-row-content="decorateRowContent"
         :style="{
            width: bodyWidth
         }">
@@ -115,6 +116,7 @@
           :highlight="highlightCurrentRow"
           :row-class-name="rowClassName"
           :row-style="rowStyle"
+          :decorate-row-content="decorateRowContent"
           :style="{
             width: bodyWidth
           }">
@@ -178,6 +180,7 @@
           :row-class-name="rowClassName"
           :row-style="rowStyle"
           :highlight="highlightCurrentRow"
+          :decorate-row-content="decorateRowContent"
           :style="{
             width: bodyWidth
           }">
@@ -223,7 +226,7 @@
   import TableBody from './table-body';
   import TableHeader from './table-header';
   import TableFooter from './table-footer';
-  import { getRowIdentity } from './util';
+  import { getRowIdentity } from '../util';
 
   const flattenData = function(data) {
     if (!data) return data;
@@ -282,8 +285,6 @@
 
       rowKey: [String, Function],
 
-      // context: {},
-
       showHeader: {
         type: Boolean,
         default: true
@@ -317,9 +318,9 @@
 
       emptyText: String,
 
-      expandRowKeys: Array,
+      // expandRowKeys: Array,
 
-      defaultExpandAll: Boolean,
+      // defaultExpandAll: Boolean,
 
       defaultSort: Object,
 
@@ -528,6 +529,10 @@
           });
         }
         return treeData;
+      },
+
+      decorateRowContent(vnodes) {
+        return vnodes;
       }
     },
 
@@ -666,16 +671,16 @@
             });
           }
         }
-      },
-
-      expandRowKeys: {
-        immediate: true,
-        handler(newVal) {
-          if (newVal) {
-            this.store.setExpandRowKeys(newVal);
-          }
-        }
       }
+
+      // expandRowKeys: {
+      //   immediate: true,
+      //   handler(newVal) {
+      //     if (newVal) {
+      //       this.store.setExpandRowKeys(newVal);
+      //     }
+      //   }
+      // }
     },
 
     destroyed() {
@@ -707,13 +712,16 @@
     },
 
     data() {
-      const store = new TableStore(this, {
+      let store = new TableStore(this, {
         rowKey: this.rowKey,
-        defaultExpandAll: this.defaultExpandAll,
+        // defaultExpandAll: this.defaultExpandAll,
         selectOnIndeterminate: this.selectOnIndeterminate,
-        indent: this.indent,
-        lazy: this.lazy
+        indent: this.indent, // tree
+        lazy: this.lazy // tree
       });
+      if (this.enhanceStore) {
+        store = this.enhanceStore(store);
+      }
       const layout = new TableLayout({
         store,
         table: this,
@@ -733,6 +741,7 @@
         // 是否拥有多级表头
         isGroup: false,
         scrollPosition: 'left'
+        // decorateRowContent: null
       };
     }
   };

@@ -78,36 +78,6 @@ const toggleRowSelection = function(states, row, selected) {
   return changed;
 };
 
-const toggleRowExpansion = function(states, row, expanded) {
-  let changed = false;
-  const expandRows = states.expandRows;
-  if (typeof expanded !== 'undefined') {
-    const index = expandRows.indexOf(row);
-    if (expanded) {
-      if (index === -1) {
-        expandRows.push(row);
-        changed = true;
-      }
-    } else {
-      if (index !== -1) {
-        expandRows.splice(index, 1);
-        changed = true;
-      }
-    }
-  } else {
-    const index = expandRows.indexOf(row);
-    if (index === -1) {
-      expandRows.push(row);
-      changed = true;
-    } else {
-      expandRows.splice(index, 1);
-      changed = true;
-    }
-  }
-
-  return changed;
-};
-
 const TableStore = function(table, initialState = {}) {
   if (!table) {
     throw new Error('Table is required.');
@@ -140,13 +110,13 @@ const TableStore = function(table, initialState = {}) {
     currentRow: null,
     hoverRow: null,
     filters: {},
-    expandRows: [],
-    defaultExpandAll: false,
+    // expandRows: [], // expand
+    // defaultExpandAll: false, // expand
     selectOnIndeterminate: false,
-    treeData: {},
-    indent: 16,
-    lazy: false,
-    lazyTreeNodeMap: {}
+    treeData: {}, // tree
+    indent: 16, // tree
+    lazy: false, // tree
+    lazyTreeNodeMap: {} // tree
   };
 
   this._toggleAllSelection = debounce(10, function(states) {
@@ -234,24 +204,24 @@ TableStore.prototype.mutations = {
       }
     }
 
-    const defaultExpandAll = states.defaultExpandAll;
-    if (defaultExpandAll) {
-      this.states.expandRows = (states.data || []).slice(0);
-    } else if (rowKey) {
-      // update expandRows to new rows according to rowKey
-      const ids = getKeysMap(this.states.expandRows, rowKey);
-      let expandRows = [];
-      for (const row of states.data) {
-        const rowId = getRowIdentity(row, rowKey);
-        if (ids[rowId]) {
-          expandRows.push(row);
-        }
-      }
-      this.states.expandRows = expandRows;
-    } else {
-      // clear the old rows
-      this.states.expandRows = [];
-    }
+    // const defaultExpandAll = states.defaultExpandAll;
+    // if (defaultExpandAll) {
+    //   this.states.expandRows = (states.data || []).slice(0);
+    // } else if (rowKey) {
+    //   // update expandRows to new rows according to rowKey
+    //   const ids = getKeysMap(this.states.expandRows, rowKey);
+    //   let expandRows = [];
+    //   for (const row of states.data) {
+    //     const rowId = getRowIdentity(row, rowKey);
+    //     if (ids[rowId]) {
+    //       expandRows.push(row);
+    //     }
+    //   }
+    //   this.states.expandRows = expandRows;
+    // } else {
+    //   // clear the old rows
+    //   this.states.expandRows = [];
+    // }
 
     Vue.nextTick(() => this.table.updateScrollY());
   },
@@ -463,21 +433,21 @@ TableStore.prototype.clearSelection = function() {
   }
 };
 
-TableStore.prototype.setExpandRowKeys = function(rowKeys) {
-  const expandRows = [];
-  const data = this.states.data;
-  const rowKey = this.states.rowKey;
-  if (!rowKey) throw new Error('[Table] prop row-key should not be empty.');
-  const keysMap = getKeysMap(data, rowKey);
-  rowKeys.forEach((key) => {
-    const info = keysMap[key];
-    if (info) {
-      expandRows.push(info.row);
-    }
-  });
+// TableStore.prototype.setExpandRowKeys = function(rowKeys) {
+//   const expandRows = [];
+//   const data = this.states.data;
+//   const rowKey = this.states.rowKey;
+//   if (!rowKey) throw new Error('[Table] prop row-key should not be empty.');
+//   const keysMap = getKeysMap(data, rowKey);
+//   rowKeys.forEach((key) => {
+//     const info = keysMap[key];
+//     if (info) {
+//       expandRows.push(info.row);
+//     }
+//   });
 
-  this.states.expandRows = expandRows;
-};
+//   this.states.expandRows = expandRows;
+// };
 
 TableStore.prototype.toggleRowSelection = function(row, selected) {
   const changed = toggleRowSelection(this.states, row, selected);
@@ -486,22 +456,22 @@ TableStore.prototype.toggleRowSelection = function(row, selected) {
   }
 };
 
-TableStore.prototype.toggleRowExpansion = function(row, expanded) {
-  const changed = toggleRowExpansion(this.states, row, expanded);
-  if (changed) {
-    this.table.$emit('expand-change', row, this.states.expandRows);
-    this.scheduleLayout();
-  }
-};
+// TableStore.prototype.toggleRowExpansion = function(row, expanded) {
+//   const changed = toggleRowExpansion(this.states, row, expanded);
+//   if (changed) {
+//     this.table.$emit('expand-change', row, this.states.expandRows);
+//     this.scheduleLayout();
+//   }
+// };
 
-TableStore.prototype.isRowExpanded = function(row) {
-  const { expandRows = [], rowKey } = this.states;
-  if (rowKey) {
-    const expandMap = getKeysMap(expandRows, rowKey);
-    return !!expandMap[getRowIdentity(row, rowKey)];
-  }
-  return expandRows.indexOf(row) !== -1;
-};
+// TableStore.prototype.isRowExpanded = function(row) {
+//   const { expandRows = [], rowKey } = this.states;
+//   if (rowKey) {
+//     const expandMap = getKeysMap(expandRows, rowKey);
+//     return !!expandMap[getRowIdentity(row, rowKey)];
+//   }
+//   return expandRows.indexOf(row) !== -1;
+// };
 
 TableStore.prototype.cleanSelection = function() {
   const selection = this.states.selection || [];
@@ -684,6 +654,7 @@ TableStore.prototype.commit = function(name, ...args) {
   }
 };
 
+// tree
 TableStore.prototype.toggleTreeExpansion = function(rowKey) {
   const { treeData } = this.states;
   const node = treeData[rowKey];
